@@ -18,13 +18,17 @@ export class ToneKnob{
 		this.count = 0;
 		this.medianVolume = 0;
 
-		// speed at which the LFO oscillates
-		// min 0.01, max 0.1
-		this._LFO_freq = 0.01;
-
 		// amplitude of the LFO
 		// min = 0, max = 1
-		this._LFO_amp = 0;
+		this._LFO_amp_min = 0;
+		this._LFO_amp_max = 0.5;
+		this._LFO_amp = this._LFO_amp_min;
+
+		// speed at which the LFO oscillates
+		// min 0.01, max 0.1
+		this._LFO_freq_min = 0.01;
+		this._LFO_freq_max = 0.1;
+		this._LFO_freq = this._LFO_freq_min;
 
 		setInterval(() => {
 			this.LFO = Math.sin(this.count) * this._LFO_amp;
@@ -56,7 +60,6 @@ export class ToneKnob{
 		newGain = clampNum(newGain, 0, 1);
 
 		this.gain.gain.setValueAtTime(newGain, now);
-
 
 		// Move amp-indicator dial up with amp dial and LFO. Even though the height of the range input is 300, 282 seems to be
 		// the magic value here
@@ -103,11 +106,12 @@ export class ToneKnob{
 		.append(
 			$("<input />")
 			.attr("type", "text")
-			.attr("value", "0")
+			.attr("value", this._LFO_amp_min)
 			.data("width", "35")
 			.data("height", "35")
-			.attr("data-min", "0")
-			.attr("data-max", "50")
+			.attr("data-min", this._LFO_amp_min)
+			.attr("data-max", this._LFO_amp_max)
+			.data("step", this._LFO_amp_max / 100)
 			.attr("data-angleOffset", "-125")
 			.attr("data-angleArc", "250")
 			.attr("data-fgColor", knobColor)
@@ -117,11 +121,12 @@ export class ToneKnob{
 		.append(
 			$("<input />")
 			.attr("type", "text")
-			.attr("value", "1")
+			.attr("value", this._LFO_freq_min)
 			.data("width", "35")
 			.data("height", "35")
-			.attr("data-min", "1")
-			.attr("data-max", "100")
+			.attr("data-min", this._LFO_freq_min)
+			.attr("data-max", this._LFO_freq_max)
+			.data("step", this._LFO_freq_max / 100)
 			.attr("data-angleOffset", "-125")
 			.attr("data-angleArc", "250")
 			.attr("data-fgColor", knobColor)
